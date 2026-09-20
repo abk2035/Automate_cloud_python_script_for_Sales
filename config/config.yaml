@@ -1,0 +1,96 @@
+run:
+  date: "yesterday"        # yesterday | today | YYYY-MM-DD
+  output_dir: "./out"
+
+email_report:
+  smtp_host: "${SMTP_HOST}"
+  smtp_port: 587
+  smtp_user: "${SMTP_USER}"
+  smtp_pass: "${SMTP_PASS}"
+  from: "${SMTP_USER}"
+  to: ["client@example.com"]
+
+gdrive:
+  enabled: true
+  folder_id: "${GDRIVE_FOLDER_ID}"
+
+shops:
+  # --- Système A : 3 boutiques ---
+  - id: shop_a1
+    name: "Boutique A1"
+    type: system_a
+    url: "https://sysA.example.com"
+    username: "${SHOP_A1_USER}"
+    password: "${SHOP_A1_PASS}"
+
+  - id: shop_a2
+    name: "Boutique A2"
+    type: system_a
+    url: "https://sysA.example.com"
+    username: "${SHOP_A2_USER}"
+    password: "${SHOP_A2_PASS}"
+
+  - id: shop_a3
+    name: "Boutique A3"
+    type: system_a
+    url: "https://sysA.example.com"
+    username: "${SHOP_A3_USER}"
+    password: "${SHOP_A3_PASS}"
+
+  # --- Système B : 3 boutiques ---
+  - id: shop_b1
+    name: "Boutique B1"
+    type: system_b
+    url: "https://sysB.example.com"
+    username: "${SHOP_B1_USER}"
+    password: "${SHOP_B1_PASS}"
+  - { id: shop_b2, name: "Boutique B2", type: system_b, url: "https://sysB.example.com", username: "${SHOP_B2_USER}", password: "${SHOP_B2_PASS}" }
+  - { id: shop_b3, name: "Boutique B3", type: system_b, url: "https://sysB.example.com", username: "${SHOP_B3_USER}", password: "${SHOP_B3_PASS}" }
+
+  # --- Sites custom ---
+  - id: shop_c1
+    name: "Boutique C1"
+    type: custom
+    url: "https://custom1.example.com/login"
+    username: "${SHOP_C1_USER}"
+    password: "${SHOP_C1_PASS}"
+    selectors:
+      user_field: "#username"
+      pass_field: "#password"
+      submit: "button[type=submit]"
+      report_link: "a[href*='sales']"
+      row: "table.sales tbody tr"
+      cells:
+        product: "td:nth-child(1)"
+        qty: "td:nth-child(2)"
+        price: "td:nth-child(3)"
+
+  - id: shop_c2
+    name: "Boutique C2"
+    type: custom
+    url: "https://custom2.example.com/login"
+    username: "${SHOP_C2_USER}"
+    password: "${SHOP_C2_PASS}"
+    selectors:
+      user_field: "input[name=email]"
+      pass_field: "input[name=password]"
+      submit: "form button"
+      report_link: "a.dashboard-sales"
+      row: ".sales-row"
+      cells: { product: ".prod", qty: ".qty", price: ".price" }
+
+  # --- Boutique e-mail ---
+  - id: shop_email
+    name: "Boutique Email"
+    type: email
+    imap_host: "imap.gmail.com"
+    imap_user: "${EMAIL_USER}"
+    imap_pass: "${EMAIL_PASS}"
+    subject_match: "Rapport ventes quotidien"
+    body_regex: "(?P<product>[A-Za-z0-9 ]+)\\s*\\|\\s*(?P<qty>\\d+)\\s*\\|\\s*(?P<price>[\\d.,]+)"
+
+  # --- Boutique saisie manuelle (total uniquement) ---
+  - id: shop_manual
+    name: "Boutique Manuelle"
+    type: manual
+    source: "./in/manual_totals.csv"   # rempli par le client (date,total)

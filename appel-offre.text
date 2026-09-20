@@ -1,0 +1,22 @@
+Résumé
+Script Python automatisé dans le cloud (web scraper + analyseur d'e-mails) générant une feuille Excel quotidienne
+
+Description :
+Je recherche un développeur Python pour créer un outil d'extraction de données entièrement automatisé qui s'exécute quotidiennement dans le cloud (par exemple, PythonAnywhere, AWS ou Google Cloud) et fournit une feuille Excel consolidée par e-mail ou via Google Drive.
+L’outil doit extraire les données de vente de 11 magasins au total, mais plusieurs d’entre eux utilisent les mêmes systèmes :
+* 3 magasins utilisent le système A (même structure/plateforme de site web).
+* 3 magasins utilisent le système B (même structure/plateforme de site web).
+* 2 magasins sont des sites web distincts nécessitant une connexion (nom d’utilisateur + mot de passe uniquement, PAS d’authentification à deux facteurs).
+* 1 boutique nécessite uniquement la saisie du chiffre d’affaires total quotidien (aucune ventilation par produit n’est nécessaire).
+* 1 boutique envoie les données de ventes quotidiennes par e-mail (le script doit analyser les données contenues dans l’e-mail reçu).
+Exigences en matière de traitement des données :
+* Se connecter automatiquement aux sites web et accéder aux rapports de ventes.
+* Regrouper les données provenant des 11 sources dans un seul fichier Excel.
+* Le script doit calculer : la commission, le prix de revient et le bénéfice net par produit/boutique selon des règles fixes que je fournirai.
+* Gestion des erreurs : si un site web présente un dysfonctionnement ou subit des modifications, le script doit tout de même traiter les 10 autres boutiques et m’informer de l’erreur.
+Technologies privilégiées : Python (Selenium/Playwright, BeautifulSoup, Pandas, IMAP pour l’analyse des e-mails).
+Veuillez fournir un devis à prix fixe ainsi qu’un calendrier prévisionnel.
+_______________________________
+Cahier de charge : 
+
+-

@@ -1,0 +1,102 @@
+PARTIE 1 — Cahier de charges (synthèse)
+1. Contexte & objectif
+Automatiser quotidiennement la collecte des ventes de 11 boutiques (plateformes hétérogènes), consolider les données, calculer commission / prix de revient / bénéfice net, et livrer un fichier Excel unique par e-mail ou Google Drive.
+
+2. Périmètre fonctionnel
+
+
+#	Source	Méthode	                                        Nb
+1	Système A (plateforme commune)	Scraping authentifié	3
+2	Système B (plateforme commune)	Scraping authentifié	3
+3	Sites distincts	Scraping (login/password, pas de 2FA)	2
+4	Boutique « total du jour »	Saisie manuelle (Google Sheet / fichier)	1
+5	Boutique e-mail	Parsing IMAP	1
+Total		10 listés → à clarifier pour atteindre 11
+
+⚠️ Point à clarifier : l'énoncé annonce 11 boutiques mais n'en liste que 10. La solution est config-driven : ajouter une boutique = ajouter une entrée YAML, sans toucher au code.
+
+3. Exigences fonctionnelles
+F1 — Connexion automatique à chaque site (identifiants stockés en variables d'environnement / secrets cloud).
+
+F2 — Récupération des ventes du jour J-1 (ou J, paramétrable).
+
+F3 — Normalisation dans un schéma commun : date, boutique, produit, qty, prix_vente, commission, cout, benefice_net.
+
+F4 — Application de règles de calcul fournies par le client (fichier rules.yaml).
+
+F5 — Génération d'un Excel multi-feuilles : Consolidé, Par boutique, Erreurs.
+
+F6 — Envoi par e-mail (SMTP) et/ou dépôt sur Google Drive.
+
+F7 — Isolation des erreurs : si 1 source échoue, les 10 autres sont traitées ; l'erreur est journalisée + signalée dans l'Excel + e-mail d'alerte.
+
+4. Exigences non-fonctionnelles
+NF1 — Hébergement cloud : PythonAnywhere / AWS Lambda / Google Cloud Run (Docker).
+
+NF2 — Exécution planifiée via cron (Linux) ou Cloud Scheduler.
+
+NF3 — Logs rotatifs + retry automatique (3 tentatives, backoff exponentiel).
+
+NF4 — Secrets jamais en dur (.env local, Secrets Manager en prod).
+
+NF5 — Idempotence : ré-exécuter ne duplique pas les données.
+
+5. Livrables
+Code source Python (dépôt Git).
+
+Fichier config.yaml + rules.yaml documentés.
+
+Dockerfile + guide de déploiement (PythonAnywhere & Cloud Run).
+
+Guide utilisateur (1 page).
+
+30 jours de garantie corrective après livraison.
+
+6. Hypothèses & dépendances
+Aucun site ne nécessite de 2FA ni de captcha.
+
+Les sélecteurs CSS/XPath des sites sont stables (à défaut, prévoir un budget maintenance).
+
+Le client fournit les identifiants + un accès test avant démarrage.
+
+7. Planning prévisionnel
+Phase	Durée	Contenu
+S1	3 j	Kickoff, réception identifiants, config YAML
+S2	5 j	Scrapers systèmes A & B + tests
+S3	4 j	Scrapers sites custom + parsing e-mail
+S4	3 j	Consolidation, calculs, Excel, notifications
+S5	3 j	Déploiement cloud + recette client
+Total	~3 semaines	
+
+8. Tarification
+-Forfait livraison : à définir selon échange (grille indicative : 1 800 – 2 500 €).
+
+-Maintenance : forfait mensuel (mises à jour sélecteurs) en option.
+
+PARTIE 2 — La solution (code)
+
+Arborescence
+
+sales_aggregator/
+├── config/
+│   ├── config.yaml
+│   └── rules.yaml
+├── src/
+│   ├── main.py
+│   ├── scrapers/
+│   │   ├── base.py
+│   │   ├── system_a.py
+│   │   ├── system_b.py
+│   │   ├── custom_shop.py
+│   │   ├── email_parser.py
+│   │   └── manual_entry.py
+│   ├── processors/
+│   │   ├── aggregator.py
+│   │   └── calculator.py
+│   ├── outputs/
+│   │   ├── excel_writer.py
+│   │   └── notifier.py
+│   └── utils/
+│       └── logger.py
+├── requirements.txt
+└── Dockerfile

@@ -1,0 +1,6 @@
+default:
+  commission_rate: 0.10      # 10%
+  cost_ratio: 0.55           # prix de revient = 55% du prix de vente
+per_shop:                    # surcharge par boutique si besoin
+  shop_a1: { commission_rate: 0.12 }
+  shop_b2: { cost_ratio: 0.60 }
